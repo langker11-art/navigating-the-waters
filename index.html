@@ -12,76 +12,76 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
-            color: #2c3e50;
-            line-height: 1.6;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #fafbfc;
+            color: #1a1a1a;
+            line-height: 1.7;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 40px 80px;
+            padding: 60px 100px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 60px;
-            padding: 40px 20px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            margin-bottom: 80px;
+            padding: 50px 20px;
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
         }
 
         h1 {
-            font-size: 3em;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-weight: 700;
+            font-size: 3.5em;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            font-weight: 400;
+            letter-spacing: -0.02em;
         }
 
         .subtitle {
-            font-size: 1.3em;
-            color: #5a6c7d;
+            font-size: 1.2em;
+            color: #4a4a4a;
             font-weight: 300;
+            font-style: italic;
         }
 
         .accent {
-            color: #3498db;
-            font-weight: 600;
+            color: #2d5f7f;
+            font-style: normal;
         }
 
         .main-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 60px;
+            gap: 50px;
+            margin-bottom: 80px;
         }
 
         .map-section {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-            position: relative;
+            background: #ffffff;
+            padding: 40px;
+            border: 1px solid #e5e5e5;
         }
 
         .map-section h2 {
-            color: #2c3e50;
-            margin-bottom: 25px;
+            color: #1a1a1a;
+            margin-bottom: 30px;
             font-size: 1.8em;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 10px;
+            font-weight: 400;
+            border-bottom: 2px solid #1a1a1a;
+            padding-bottom: 15px;
         }
 
         #map-container {
             position: relative;
             width: 100%;
             height: 500px;
-            background: #f0f4f8;
-            border-radius: 15px;
+            background: #f5f5f5;
             overflow: hidden;
             cursor: grab;
+            border: 1px solid #e5e5e5;
         }
 
         #map-container:active {
@@ -94,56 +94,53 @@
             height: 40px;
             cursor: pointer;
             transform: translate(-50%, -100%);
-            transition: transform 0.3s ease;
+            transition: transform 0.2s ease;
             z-index: 10;
         }
 
         .map-pin:hover {
-            transform: translate(-50%, -100%) scale(1.2);
-        }
-
-        .map-pin svg {
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+            transform: translate(-50%, -100%) scale(1.15);
         }
 
         .info-section {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            background: #ffffff;
+            padding: 40px;
+            border: 1px solid #e5e5e5;
         }
 
         .info-section h2 {
-            color: #2c3e50;
-            margin-bottom: 25px;
+            color: #1a1a1a;
+            margin-bottom: 30px;
             font-size: 1.8em;
-            border-bottom: 3px solid #e74c3c;
-            padding-bottom: 10px;
+            font-weight: 400;
+            border-bottom: 2px solid #1a1a1a;
+            padding-bottom: 15px;
         }
 
         .artwork-card {
-            margin-bottom: 30px;
-            padding: 25px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            border-left: 5px solid #3498db;
-            transition: all 0.3s ease;
+            margin-bottom: 35px;
+            padding: 30px;
+            background: #fafafa;
+            border-left: 3px solid #2d5f7f;
+            transition: all 0.2s ease;
         }
 
         .artwork-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            background: #f5f5f5;
+            border-left-width: 4px;
         }
 
         .artwork-card h3 {
-            color: #2c3e50;
+            color: #1a1a1a;
             margin-bottom: 15px;
             font-size: 1.5em;
+            font-weight: 400;
         }
 
         .artwork-card p {
-            color: #5a6c7d;
-            margin-bottom: 10px;
+            color: #4a4a4a;
+            margin-bottom: 8px;
+            font-size: 1em;
         }
 
         .popup-overlay {
@@ -153,16 +150,15 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.75);
             z-index: 1000;
-            backdrop-filter: blur(5px);
         }
 
         .popup-overlay.active {
             display: flex;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.25s ease;
         }
 
         @keyframes fadeIn {
@@ -171,19 +167,18 @@
         }
 
         .popup-content {
-            background: white;
-            border-radius: 20px;
-            max-width: 700px;
-            max-height: 80vh;
+            background: #ffffff;
+            max-width: 750px;
+            max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             position: relative;
-            animation: slideUp 0.3s ease;
+            animation: slideUp 0.25s ease;
+            border: 1px solid #1a1a1a;
         }
 
         @keyframes slideUp {
             from {
-                transform: translateY(50px);
+                transform: translateY(30px);
                 opacity: 0;
             }
             to {
@@ -193,90 +188,109 @@
         }
 
         .popup-header {
-            padding: 30px;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
-            border-radius: 20px 20px 0 0;
+            padding: 40px 45px;
+            background: #1a1a1a;
+            color: #ffffff;
             position: relative;
+            border-bottom: 3px solid #2d5f7f;
         }
 
         .popup-header h3 {
-            font-size: 2em;
-            margin-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 400;
         }
 
         .popup-header .artist-name {
-            font-size: 1.2em;
-            opacity: 0.9;
+            font-size: 1.1em;
+            opacity: 0.85;
             font-weight: 300;
+            font-style: italic;
         }
 
         .close-popup {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 35px;
-            height: 35px;
-            background: rgba(255,255,255,0.2);
-            border: none;
-            border-radius: 50%;
-            color: white;
+            top: 25px;
+            right: 30px;
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.4);
+            color: #ffffff;
             font-size: 24px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: Arial, sans-serif;
         }
 
         .close-popup:hover {
-            background: rgba(255,255,255,0.3);
-            transform: rotate(90deg);
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.8);
         }
 
         .popup-body {
-            padding: 30px;
+            padding: 45px;
         }
 
         .popup-section {
-            margin-bottom: 25px;
+            margin-bottom: 35px;
         }
 
         .popup-section h4 {
-            color: #3498db;
-            margin-bottom: 12px;
+            color: #2d5f7f;
+            margin-bottom: 15px;
             font-size: 1.3em;
+            font-weight: 400;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 8px;
         }
 
         .popup-section p {
-            color: #5a6c7d;
+            color: #3a3a3a;
             line-height: 1.8;
+            font-size: 1.05em;
         }
 
         .location-info {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            border-left: 4px solid #3498db;
+            background: #f8f8f8;
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 3px solid #2d5f7f;
+        }
+
+        .location-info p {
+            margin-bottom: 12px;
+            color: #3a3a3a;
+        }
+
+        .location-info p:last-child {
+            margin-bottom: 0;
         }
 
         .location-info strong {
-            color: #2c3e50;
+            color: #1a1a1a;
+            font-weight: 500;
         }
 
         footer {
             text-align: center;
-            padding: 30px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-            color: #5a6c7d;
+            padding: 40px;
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            color: #4a4a4a;
+            font-size: 0.95em;
+        }
+
+        footer p {
+            margin-bottom: 5px;
         }
 
         @media (max-width: 1024px) {
             .container {
-                padding: 30px 40px;
+                padding: 40px 50px;
             }
 
             .main-content {
@@ -286,16 +300,24 @@
 
         @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                padding: 30px 20px;
             }
 
             h1 {
-                font-size: 2em;
+                font-size: 2.5em;
             }
 
             .popup-content {
                 margin: 20px;
                 max-height: 90vh;
+            }
+
+            .popup-header {
+                padding: 30px 25px;
+            }
+
+            .popup-body {
+                padding: 30px 25px;
             }
         }
     </style>
@@ -309,31 +331,31 @@
 
         <div class="main-content">
             <div class="map-section">
-                <h2>📍 Interactive Map</h2>
+                <h2>Interactive Map</h2>
                 <div id="map-container">
                     <svg width="100%" height="100%" viewBox="0 0 600 500" preserveAspectRatio="xMidYMid meet">
                         <!-- Simple water representation -->
-                        <path d="M 0,200 Q 150,180 300,200 T 600,200 L 600,500 L 0,500 Z" fill="#d4e9f7" opacity="0.3"/>
+                        <path d="M 0,200 Q 150,180 300,200 T 600,200 L 600,500 L 0,500 Z" fill="#c5d8e5" opacity="0.25"/>
                         
                         <!-- Land masses -->
-                        <ellipse cx="150" cy="250" rx="100" ry="80" fill="#c8e6c9" opacity="0.4"/>
-                        <ellipse cx="450" cy="300" rx="120" ry="90" fill="#c8e6c9" opacity="0.4"/>
+                        <ellipse cx="150" cy="250" rx="100" ry="80" fill="#d4d9d4" opacity="0.3"/>
+                        <ellipse cx="450" cy="300" rx="120" ry="90" fill="#d4d9d4" opacity="0.3"/>
                         
                         <!-- Decorative wave patterns -->
-                        <path d="M 50,220 Q 70,215 90,220 T 130,220" stroke="#3498db" fill="none" stroke-width="2" opacity="0.3"/>
-                        <path d="M 200,240 Q 220,235 240,240 T 280,240" stroke="#3498db" fill="none" stroke-width="2" opacity="0.3"/>
+                        <path d="M 50,220 Q 70,215 90,220 T 130,220" stroke="#2d5f7f" fill="none" stroke-width="1.5" opacity="0.25"/>
+                        <path d="M 200,240 Q 220,235 240,240 T 280,240" stroke="#2d5f7f" fill="none" stroke-width="1.5" opacity="0.25"/>
                     </svg>
                     
                     <!-- Pin 1: Gateway to the Pacific -->
                     <div class="map-pin" data-artwork="artwork1" style="left: 30%; top: 45%;">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="#e74c3c">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="#8b4513">
                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                         </svg>
                     </div>
                     
                     <!-- Pin 2: Water Protectors -->
                     <div class="map-pin" data-artwork="artwork2" style="left: 70%; top: 55%;">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="#3498db">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="#2d5f7f">
                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                         </svg>
                     </div>
@@ -341,20 +363,20 @@
             </div>
 
             <div class="info-section">
-                <h2>🎨 Featured Artworks</h2>
+                <h2>Featured Artworks</h2>
                 
                 <div class="artwork-card">
                     <h3>Gateway to the Pacific</h3>
                     <p><strong>Artist:</strong> Susan Point (Coast Salish, Musqueam)</p>
                     <p><strong>Location:</strong> Vancouver Convention Centre</p>
-                    <p>Click the red pin on the map to learn more →</p>
+                    <p style="margin-top: 12px; font-style: italic;">Click the brown pin on the map to learn more</p>
                 </div>
 
                 <div class="artwork-card">
                     <h3>Water Protectors</h3>
                     <p><strong>Artist:</strong> Multiple Indigenous Artists</p>
                     <p><strong>Location:</strong> Fraser River Foreshore</p>
-                    <p>Click the blue pin on the map to learn more →</p>
+                    <p style="margin-top: 12px; font-style: italic;">Click the blue pin on the map to learn more</p>
                 </div>
             </div>
         </div>
@@ -419,7 +441,7 @@
                 <div class="popup-header">
                     <button class="close-popup" onclick="closePopup()">×</button>
                     <h3>${artwork.title}</h3>
-                    <p class="artist-name">${artwork.artist} - ${artwork.tribe}</p>
+                    <p class="artist-name">${artwork.artist} — ${artwork.tribe}</p>
                 </div>
                 <div class="popup-body">
                     <div class="popup-section">
@@ -438,9 +460,9 @@
                     </div>
                     
                     <div class="location-info">
-                        <p><strong>📍 Location:</strong> ${artwork.location}</p>
-                        <p><strong>📅 Year:</strong> ${artwork.year}</p>
-                        <p><strong>🚶 How to Visit:</strong> ${artwork.access}</p>
+                        <p><strong>Location:</strong> ${artwork.location}</p>
+                        <p><strong>Year:</strong> ${artwork.year}</p>
+                        <p><strong>How to Visit:</strong> ${artwork.access}</p>
                     </div>
                 </div>
             `;
