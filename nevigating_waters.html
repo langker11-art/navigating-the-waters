@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigating the Waters - Indigenous Public Art Walk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Raleway', 'Noto Sans', 'Segoe UI', system-ui, sans-serif;
+            font-size: 14px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e8e8e8;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .bg-decoration {
+            position: fixed;
+            bottom: -40px;
+            right: -55px;
+            pointer-events: none;
+            z-index: 0;
+            transform: rotate(-12deg);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .territory-label {
+            font-family: 'Noto Sans', 'Segoe UI', system-ui, sans-serif;
+            font-size: 0.72em;
+            color: #8a9fcc;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            font-weight: 400;
+        }
+
+        h1, h2, .popup-header h3 {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+        }
+
+        h1 {
+            font-size: 4em;
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            line-height: 1.15;
+        }
+
+        .h1-accent {
+            color: #d4a827;
+        }
+
+        .subtitle {
+            font-size: 1.0em;
+            color: #b8b8b8;
+            margin-bottom: 40px;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        .intro-text {
+            max-width: 900px;
+            margin: 0 auto 50px;
+            padding: 0 0 0 28px;
+            border-left: 3px solid #d4a827;
+            font-size: 1.05em;
+            color: #d0d0d0;
+            line-height: 1.8;
+        }
+
+        .stop-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+
+        .stop-btn {
+            background: rgba(212, 168, 39, 0.12);
+            border: 1px solid rgba(212, 168, 39, 0.45);
+            color: #d4a827;
+            padding: 9px 22px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .stop-btn:hover {
+            background: rgba(212, 168, 39, 0.22);
+            border-color: #d4a827;
+            color: #f0d060;
+        }
+
+        .map-section {
+            margin-bottom: 50px;
+        }
+
+        .map-heading {
+            color: #ffffff;
+            margin-bottom: 6px;
+            font-size: 1.5em;
+            font-weight: 400;
+        }
+
+        .map-instruction {
+            color: rgba(212, 168, 39, 0.7);
+            font-size: 0.82em;
+            font-style: italic;
+            margin-bottom: 18px;
+            letter-spacing: 0.3px;
+        }
+
+        #map {
+            width: 100%;
+            height: 540px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        /* Leaflet tooltip */
+        .leaflet-tooltip.art-tip {
+            background: rgba(14, 12, 8, 0.92);
+            border: 1px solid rgba(212, 168, 39, 0.45);
+            color: #e8c84a;
+            font-size: 0.8em;
+            padding: 5px 11px;
+            border-radius: 3px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
+        .leaflet-tooltip.art-tip.leaflet-tooltip-top::before {
+            border-top-color: rgba(212, 168, 39, 0.45);
+        }
+
+        /* Leaflet attribution */
+        .leaflet-control-attribution {
+            background: rgba(10, 10, 10, 0.75) !important;
+            color: #888 !important;
+            font-size: 0.7em;
+        }
+        .leaflet-control-attribution a { color: #aaa !important; }
+
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .popup-overlay.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .popup-content {
+            background: rgba(18, 22, 42, 0.82);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            max-width: 750px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 8px;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .popup-header {
+            padding: 32px 40px 28px;
+            background: rgba(14, 18, 34, 0.55);
+            color: #ffffff;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .popup-header h3 {
+            font-size: 2em;
+            margin-bottom: 6px;
+            font-weight: 400;
+            color: #d4a827;
+        }
+
+        .popup-header .location {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 300;
+            margin-bottom: 0;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-popup:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .popup-body {
+            padding: 40px;
+        }
+
+        .popup-section {
+            margin-bottom: 30px;
+        }
+
+        .popup-section h4 {
+            color: #d4a827;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+
+        .popup-artwork-img {
+            width: 100%;
+            max-height: 260px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            display: block;
+            opacity: 0.92;
+        }
+
+        .popup-section p {
+            color: #d0d0d0;
+            line-height: 1.8;
+        }
+
+        /* Popup scrollbar */
+        .popup-content::-webkit-scrollbar {
+            width: 5px;
+        }
+        .popup-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .popup-content::-webkit-scrollbar-thumb {
+            background: #d4a827;
+            border-radius: 3px;
+        }
+        .popup-content::-webkit-scrollbar-thumb:hover {
+            background: #f0c840;
+        }
+        .popup-content {
+            scrollbar-width: thin;
+            scrollbar-color: #d4a827 rgba(255, 255, 255, 0.03);
+        }
+
+        .location-info {
+            padding: 14px 0 14px 20px;
+            border-left: 3px solid #d4a827;
+            margin-bottom: 32px;
+        }
+
+        .location-info p {
+            margin-bottom: 5px;
+            color: #b8b8b8;
+            font-size: 0.92em;
+        }
+
+        .location-info strong {
+            color: #e8e8e8;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #b8b8b8;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                padding: 40px 50px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .popup-content {
+                margin: 20px;
+                max-height: 90vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background decoration: salmon silhouette -->
+    <div class="bg-decoration" aria-hidden="true">
+        <svg width="520" height="235" viewBox="0 0 560 252" xmlns="http://www.w3.org/2000/svg">
+            <!-- Main body + forked tail -->
+            <path d="
+                M 72,126
+                C 72,82 122,42 222,31
+                C 322,20 432,26 492,67
+                L 552,18 L 522,126 L 552,234 L 492,185
+                C 432,226 322,232 222,221
+                C 122,210 72,170 72,126 Z
+            " fill="rgba(148,185,230,0.065)"/>
+            <!-- Dorsal fin -->
+            <path d="M 228,33 Q 298,-14 362,27 Z"
+                  fill="rgba(148,185,230,0.05)"/>
+            <!-- Pectoral fin -->
+            <path d="M 348,178 Q 408,214 386,242 Q 348,230 348,178 Z"
+                  fill="rgba(148,185,230,0.05)"/>
+            <!-- Eye -->
+            <circle cx="108" cy="119" r="9" fill="rgba(148,185,230,0.09)"/>
+        </svg>
+    </div>
+
+    <div class="container">
+        <header>
+            <p class="territory-label">kʷikʷəƛ̓əm Territory · Coquitlam, BC</p>
+            <h1>Navigating the<br><span class="h1-accent">Waters</span></h1>
+            <p class="subtitle">An Indigenous public art walk celebrating the enduring presence of Coast Salish peoples on this land.</p>
+        </header>
+
+        <div class="intro-text">
+            <div class="stop-buttons">
+                <button class="stop-btn" onclick="showPopup('ripple')">Stop 1 • The Ripple</button>
+                <button class="stop-btn" onclick="showPopup('salmon')">Stop 2 • Salmon Project</button>
+            </div>
+            <p class="subtitle">Welcome to Coquitlam, a city situated on the unceded traditional territory of the kʷikʷəƛ̓əm (Kwikwetlem) First Nation. <br>The name "Coquitlam" is derived from the kʷikʷəƛ̓əm word meaning "red fish up the river," referring to the sockeye salmon that once flourished in the local waters and served as a vital resource for the Kwikwetlem people. This map guides you through two significant public artworks that visually narrate the profound connection between the Indigenous peoples, the local ecosystems, and the community. By exploring these sites, viewers from all cultural backgrounds are invited to learn about Coast Salish history and the enduring presence of Indigenous stewardship on these lands.</p>
+        </div>
+
+        <div class="map-section">
+            <h2 class="map-heading">Waters of kʷikʷəƛ̓əm</h2>
+            <p class="map-instruction">Select a pin to explore the artwork at that location</p>
+            <div id="map"></div>
+        </div>
+
+        <footer>
+            <p>Created for AHIS 330 - Indigenous Art History</p>
+            <p>Eunsoo Baek</p>
+        </footer>
+    </div>
+
+    <!-- Popup Overlay -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content" id="popupContent"></div>
+    </div>
+
+    <script>
+        // ── Artwork data ─────────────────────────────────────────────
+        const artworks = {
+            ripple: {
+                title: "The Ripple",
+                location: "Coquitlam City Centre",
+                artist: "Raven-Tacuara Artist Collective — Facundo Gastiazoro (Argentinian), Amanda Hugon (Stó:lō: kʷikʷəƛ̓əm, Cheam and Michif), Stephanie Anderson (Laksilyu Wet'suwet'en Nation), Travis Hebert (Cree, Métis)",
+                year: "2023",
+                image: "The_Ripple.png",
+                descriptionLabel: "Visual Description & Analysis",
+                description: "The Ripple is a dynamic, large-scale mural anchored by a central design inspired by a traditional Coast Salish spindle whorl. From this central face, concentric visual waves ripple outwards, carrying vibrant, stylized depictions of local flora and fauna. This radial composition effectively illustrates the interconnectedness of all living things within the Coquitlam watershed.<br><br>The spindle whorl is a powerful Coast Salish symbol historically used to spin wool; here, it metaphorically spins the continuous threads of life and community. The artists' use of bold colors and sharp geometric forms creates a distinct sense of movement, representing the ongoing cycle of life and the resilience of Indigenous cultures. By situating this prominent Indigenous iconography in a busy urban center, the collective actively reclaims public space. The mural functions not merely as aesthetic decoration, but as a visual declaration of territorial stewardship. It serves to disrupt the colonial urban landscape, reminding a diverse public of the deep and continuous Indigenous presence on these lands, while advocating for the protection of the local ecosystem.",
+                analysis: null,
+                artistBio: "The Raven-Tacuara Artist Collective is formed by Indigenous artists Amanda Hugon, Stephanie Anderson, and Facundo Gastiazoro. This collective specializes in large-scale public murals that integrate traditional Indigenous storytelling with contemporary street art techniques, emphasizing cultural heritage, environmental stewardship, and community collaboration. For The Ripple, the collective worked alongside the kʷikʷəƛ̓əm First Nation, receiving a formal blessing to ensure the artwork accurately reflects local Coast Salish protocols and historical narratives.",
+                access: "Accessible via the Millennium Line SkyTrain (Lafarge Lake-Douglas Station). The site is flat and fully wheelchair accessible."
+            },
+            salmon: {
+                title: "Coquitlam 125 Salmon Project",
+                artist: "Jody Broomfield (Sinámkin)",
+                year: "2016",
+                image: "Salmon_project.jpg",
+                descriptionLabel: "Visual Description & Analysis",
+                description: "The Coquitlam 125 Salmon Project consists of twelve identical, six-foot-tall fiberglass salmon sculptures. The base form, designed by Jody Broomfield, is characterized by smooth, streamlined contours that capture the forward motion of a salmon swimming upstream. Broomfield's master design incorporates quintessential Coast Salish aesthetic elements, such as ovoids, U-forms, and split U-forms, carved into the surface of the fish. These traditional shapes break down the anatomy of the salmon into abstract, fluid geometries that represent both spiritual and physical vitality.<br><br>The subject matter directly references the name \"Coquitlam,\" which is a literal embodiment of the land's history. Within a public space context, the repetition of these massive sculptures across twelve distinct city locations functions as a large-scale territorial marker. As viewers navigate from one sculpture to the next, the art physically maps the historical migratory routes. The project reminds a multicultural public of the historical and ongoing importance of the salmon to the sustenance and spiritual life of the local Coast Salish peoples.",
+                analysis: null,
+                artistBio: "Jody Broomfield (Sinámkin) is a Coast Salish artist from the Sḵwx̱wú7mesh (Squamish) Nation. Operating as a full-time artist since 1999, he apprenticed under master carver Klatle Bhi. Broomfield is renowned for his mastery of traditional Coast Salish design elements, applying them across diverse mediums including carved wood, etched glass, and large-scale public metal or fiberglass sculptures. His public works, which include welcome figures and prominent cultural markers, are dedicated to educating the broader public on the richness of Squamish and Coast Salish heritage.",
+                access: "12 locations across Coquitlam. This is a city-wide scavenger hunt — drive or cycle between the mapped pins. Blue Mountain Park offers free parking and paved walking paths."
+            }
+        };
+
+        // ── Leaflet map ───────────────────────────────────────────────
+        const map = L.map('map', { zoomControl: true }).setView([49.273, -122.800], 13);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+
+        // ── Custom marker icons ───────────────────────────────────────
+        function makeIcon(fillColor, size) {
+            const h = Math.round(size * 1.28);
+            return L.divIcon({
+                html: `<svg width="${size}" height="${h}" viewBox="0 0 34 44" xmlns="http://www.w3.org/2000/svg">
+                    <filter id="sh"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="rgba(0,0,0,0.55)"/></filter>
+                    <path d="M17 0C7.611 0 0 7.611 0 17c0 11.667 17 27 17 27S34 28.667 34 17C34 7.611 26.389 0 17 0z"
+                          fill="${fillColor}" filter="url(#sh)"/>
+                    <circle cx="17" cy="17" r="6.5" fill="rgba(255,255,255,0.88)"/>
+                </svg>`,
+                className: '',
+                iconSize:   [size, h],
+                iconAnchor: [size / 2, h],
+                tooltipAnchor: [0, -h]
+            });
+        }
+
+        const rippleIcon = makeIcon('#d4a827', 36);
+        const salmonIcon = makeIcon('#e05555', 28);
+
+        // ── The Ripple ────────────────────────────────────────────────
+        L.marker([49.27055, -122.79175], { icon: rippleIcon })
+            .addTo(map)
+            .bindTooltip('The Ripple — Spirit Square', {
+                direction: 'top', className: 'art-tip', offset: [0, 0]
+            })
+            .on('click', () => showPopup('ripple'));
+
+        // ── Salmon Project locations ──────────────────────────────────
+        const salmonSites = [
+            { name: 'Blue Mountain Park',                    coords: [49.2962, -122.8101] },
+            { name: 'City Hall',                             coords: [49.2745, -122.7950] },
+            { name: 'Como Lake Park',                        coords: [49.2710, -122.8228] },
+            { name: 'Coquitlam Crunch',                      coords: [49.2848, -122.7779] },
+            { name: 'Coquitlam Public Library – Poirier',    coords: [49.2659, -122.7953] },
+            { name: 'Cottonwood Park',                       coords: [49.2627, -122.8024] },
+            { name: 'LaFarge Lake',                          coords: [49.2757, -122.7887] },
+            { name: 'Mackin Park',                           coords: [49.2743, -122.8154] },
+            { name: 'Mundy Park',                            coords: [49.2676, -122.8063] },
+            { name: 'Poirier Sport & Leisure Complex',       coords: [49.2651, -122.7967] },
+            { name: 'Victoria Park',                         coords: [49.2622, -122.8155] },
+        ];
+
+        salmonSites.forEach(site => {
+            L.marker(site.coords, { icon: salmonIcon })
+                .addTo(map)
+                .bindTooltip(site.name, {
+                    direction: 'top', className: 'art-tip', offset: [0, 0]
+                })
+                .on('click', () => showPopup('salmon', site.name));
+        });
+
+        // ── Popup system ──────────────────────────────────────────────
+        const popupOverlay = document.getElementById('popupOverlay');
+
+        function showPopup(artworkId, specificLocation = null) {
+            const artwork = artworks[artworkId];
+            const displayLocation = specificLocation || artwork.location;
+
+            document.getElementById('popupContent').innerHTML = `
+                <div class="popup-header">
+                    <button class="close-popup" onclick="closePopup()">×</button>
+                    <h3>${artwork.title}</h3>
+                    <p class="location">${displayLocation}</p>
+                </div>
+                <div class="popup-body">
+                    <div class="location-info">
+                        <p><strong>Artist:</strong> ${artwork.artist}</p>
+                        <p><strong>Year:</strong> ${artwork.year}</p>
+                        <p><strong>How to Visit:</strong> ${artwork.access}</p>
+                    </div>
+                    <div class="popup-section">
+                        <img class="popup-artwork-img" src="${artwork.image}" alt="${artwork.title}">
+                        <h4>About the Artist</h4>
+                        <p>${artwork.artistBio}</p>
+                    </div>
+                    <div class="popup-section">
+                        <h4>${artwork.descriptionLabel || 'Visual Description'}</h4>
+                        <p>${artwork.description}</p>
+                    </div>
+                    ${artwork.analysis ? `<div class="popup-section">
+                        <h4>Analysis</h4>
+                        <p>${artwork.analysis}</p>
+                    </div>` : ''}
+                </div>`;
+
+            popupOverlay.classList.add('active');
+        }
+
+        function closePopup() {
+            popupOverlay.classList.remove('active');
+        }
+
+        popupOverlay.addEventListener('click', e => {
+            if (e.target === popupOverlay) closePopup();
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closePopup();
+        });
+    </script>
+</body>
+</html>
